@@ -9,6 +9,10 @@
 (deftest test-blank
   (is (= [:Source] (parser ""))))
 
+(deftest test-blank-lines
+  (is (= [:Source] (parser "\n\n")))
+  (is (= [:Source [:Statement [:Instruction [:Arithmetic [:ArithmeticOpcode "ADD"] [:Register "R1"] [:Register "R2"] [:Immediate "5"]]]]] (parser "\n\nADD R1, R2, #5\n\n"))))
+
 (deftest test-label
   (is (= [:Source [:Label "print_char"]] (parser ".print_char")))
   (is (= [:Source [:Label "print_char" [:Comment "print a char"]]] (parser ".print_char ; print a char"))))

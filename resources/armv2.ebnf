@@ -1,4 +1,6 @@
-Source = (SourceLine NewLine)* [SourceLine];
+Source = (Line NewLine)* [Line];
+
+<Line> = SourceLine | Whitespace;
 
 <SourceLine> = [Whitespace] (Comment | Label | Statement);
 
