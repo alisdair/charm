@@ -1,0 +1,58 @@
+Source = (SourceLine NewLine)* [SourceLine];
+
+<SourceLine> = [Whitespace] (Comment | Label | Statement);
+
+Comment = <#";\s*"> #"[^\n]*";
+
+Label = <"."> #"[A-Za-z0-9_-]+" [Whitespace] [Statement] [Comment];
+
+Statement = Instruction [Whitespace] [Comment];
+
+Instruction = Arithmetic | Move | Compare |
+              Multiply | MultiplyAccumulate |
+              Branch | SoftwareInterrupt | Swap |
+              Load | Store | LoadMultiple | StoreMultiple;
+
+Arithmetic = ArithmeticOpcode [Condition] [Status] Whitespace
+             Register Separator
+             Register Separator
+             ShiftedRegisterOrImmediate;
+
+Move               = "FIXME";
+Compare            = "FIXME";
+Multiply           = "FIXME";
+MultiplyAccumulate = "FIXME";
+Branch             = "FIXME";
+SoftwareInterrupt  = "FIXME";
+Swap               = "FIXME";
+Load               = "FIXME";
+Store              = "FIXME";
+LoadMultiple       = "FIXME";
+StoreMultiple      = "FIXME";
+
+ArithmeticOpcode = "ADC" | "ADD" | "AND" | "BIC" | "EOR" | "ORR" | "RSB" |
+                   "RSC" | "SBC" | "SUB";
+
+Register = #"(R1[0-5])|(R[1-9])" | #"A[1-4]" | #"V[1-6]" |
+           "SL" | "FP" | "IP" | "SP" | "LR" | "PC";
+
+<ShiftedRegisterOrImmediate> = Register [Separator Shift] | Immediate;
+
+Shift = ShiftWithArgument | "RRX";
+
+<ShiftWithArgument> = ShiftType Whitespace (Immediate | Register);
+
+<ShiftType> = "LSL" | "ASL" | "LSR" | "ASR" | "ROR";
+
+Immediate = <"#"> #"\d+";
+
+Condition = "EQ" | "NE" | "VS" | "VC" | "HI" | "LS" | "PL" | "MI" | "CS" |
+            "CC" | "GE" | "GT" | "LE" | "LT";
+
+Status = <"S">;
+
+<Separator> = <","> Whitespace;
+
+<Whitespace> = <#"\s*">;
+
+<NewLine> = <"\n">
