@@ -49,3 +49,16 @@
 
 (deftest test-multiply-accumulate
   (is (= [:Source [:Statement [:Instruction [:MultiplyAccumulate "MLA" [:Condition "GT"] [:Register "R1"] [:Register "R2"] [:Register "R3"] [:Register "R4"]]]]] (parser "MLAGT R1, R2, R3, R4"))))
+
+(deftest test-load
+  (is (= [:Source [:Statement [:Instruction [:Load "LDR" [:Byte] [:Register "R0"] [:LoadStoreAddress [:Register "R1"] [:Offset [:Immediate [:DecimalNumber "4"]]]]]]]] (parser "LDRB R0, [R1, #4]")))
+  (is (= [:Source [:Statement [:Instruction [:Load "LDR" [:Register "R0"] [:LoadStoreAddress [:Register "R1"] [:PostIndexOffset [:Immediate [:DecimalNumber "4"]]]]]]]] (parser "LDR R0, [R1], #4")))
+  (is (= [:Source [:Statement [:Instruction [:Load "LDR" [:Register "R0"] [:LoadStoreAddress [:Register "R1"] [:PreIndexOffset [:SignedImmediate [:Sign "-"] [:DecimalNumber "4"]]]]]]]] (parser "LDR R0, [R1, #-4]!")))
+  (is (= [:Source [:Statement [:Instruction [:Load "LDR" [:Register "R0"] [:LoadStoreAddress [:Register "R1"] [:Offset [:Sign "-"] [:Register "R2"]]]]]]] (parser "LDR R0, [R1, -R2]")))
+  (is (= [:Source [:Statement [:Instruction [:Load "LDR" [:Condition "EQ"] [:Translate] [:Register "R0"] [:LoadStoreAddress [:Register "R1"] [:PreIndexOffset [:Immediate [:DecimalNumber "4"]]]]]]]] (parser "LDREQT R0, [R1, #4]!"))))
+
+(deftest test-store
+  (is (= [:Source [:Statement [:Instruction [:Store "STR" [:Byte] [:Register "R0"] [:LoadStoreAddress [:Register "R1"] [:Offset [:Immediate [:DecimalNumber "4"]]]]]]]] (parser "STRB R0, [R1, #4]"))))
+
+(deftest test-swap
+  (is (= [:Source [:Statement [:Instruction [:Swap "SWP" [:Register "R0"] [:Register "R0"] [:Register "R1"]]]]] (parser "SWP R0, R0, [R1]"))))

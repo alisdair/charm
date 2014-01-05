@@ -37,9 +37,16 @@ MultiplyAccumulate = "MLA" [Condition] [Status] Whitespace
                      Register Separator
                      Register Separator
                      Register;
-Load               = "FIXME";
-Store              = "FIXME";
-Swap               = "FIXME";
+Load               = "LDR" [Condition] [Byte] [Translate] Whitespace
+                     Register Separator
+                     LoadStoreAddress;
+Store              = "STR" [Condition] [Byte] [Translate] Whitespace
+                     Register Separator
+                     LoadStoreAddress;
+Swap               = "SWP" [Condition] Whitespace
+                     Register Separator
+                     Register Separator
+                     <"["> Register <"]">;
 LoadMultiple       = "FIXME";
 StoreMultiple      = "FIXME";
 
@@ -57,6 +64,8 @@ Register = #"(R1[0-5])|(R[0-9])" | #"A[1-4]" | #"V[1-6]" |
 
 <ShiftedRegisterOrImmediate> = Register [Separator Shift] | Immediate;
 
+<SignedShiftedRegisterOrImmediate> = [Sign] Register [Separator Shift] | Immediate | SignedImmediate;
+
 Shift = ShiftWithArgument | "RRX";
 
 <ShiftWithArgument> = ShiftType Whitespace (Immediate | Register);
@@ -65,9 +74,25 @@ Shift = ShiftWithArgument | "RRX";
 
 Immediate = <"#"> Number;
 
+SignedImmediate = <"#"> Sign Number;
+
 Address = Number | Identifier;
 
 <Number> = DecimalNumber | HexNumber;
+
+Sign = "-" | "+";
+
+Byte = <"B">;
+
+Translate = <"T">;
+
+LoadStoreAddress = <"[">
+                   Register
+                   (<"]"> |
+                   Offset | PreIndexOffset | PostIndexOffset);
+Offset           = Separator SignedShiftedRegisterOrImmediate <"]">;
+PreIndexOffset   = Separator SignedShiftedRegisterOrImmediate <"]!">;
+PostIndexOffset  = <"]"> Separator SignedShiftedRegisterOrImmediate;
 
 DecimalNumber = #"\d+";
 
