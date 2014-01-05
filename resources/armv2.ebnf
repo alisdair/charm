@@ -6,7 +6,7 @@ Source = (Line NewLine)* [Line];
 
 Comment = <#";\s*"> #"[^\n]*";
 
-Label = <"."> #"[A-Za-z0-9_-]+" [Whitespace] [Statement] [Comment];
+Label = <"."> Identifier [Whitespace] [Statement] [Comment];
 
 Statement = Instruction [Whitespace] [Comment];
 
@@ -15,25 +15,42 @@ Instruction = Arithmetic | Move | Compare |
               Branch | SoftwareInterrupt | Swap |
               Load | Store | LoadMultiple | StoreMultiple;
 
-Arithmetic = ArithmeticOpcode [Condition] [Status] Whitespace
-             Register Separator
-             Register Separator
-             ShiftedRegisterOrImmediate;
-
-Move               = "FIXME";
-Compare            = "FIXME";
-Multiply           = "FIXME";
-MultiplyAccumulate = "FIXME";
-Branch             = "FIXME";
-SoftwareInterrupt  = "FIXME";
-Swap               = "FIXME";
+Arithmetic         = ArithmeticOpcode [Condition] [Status] Whitespace
+                     Register Separator
+                     Register Separator
+                     ShiftedRegisterOrImmediate;
+Move               = MoveOpcode [Condition] [Status] Whitespace
+                     Register Separator
+                     ShiftedRegisterOrImmediate;
+Compare            = CompareOpcode [Condition] Whitespace
+                     Register Separator
+                     ShiftedRegisterOrImmediate;
+Branch             = BranchOpcode [Condition] Whitespace
+                     Address;
+SoftwareInterrupt  = "SWI" [Condition] Number;
+Multiply           = "MUL" [Condition] [Status] Whitespace
+                     Register Separator
+                     Register Separator
+                     Register;
+MultiplyAccumulate = "MLA" [Condition] [Status] Whitespace
+                     Register Separator
+                     Register Separator
+                     Register Separator
+                     Register;
 Load               = "FIXME";
 Store              = "FIXME";
+Swap               = "FIXME";
 LoadMultiple       = "FIXME";
 StoreMultiple      = "FIXME";
 
-ArithmeticOpcode = "ADC" | "ADD" | "AND" | "BIC" | "EOR" | "ORR" | "RSB" |
-                   "RSC" | "SBC" | "SUB";
+<ArithmeticOpcode> = "ADC" | "ADD" | "AND" | "BIC" | "EOR" | "ORR" | "RSB" |
+                     "RSC" | "SBC" | "SUB";
+
+<MoveOpcode>       = "MOV" | "MVN";
+
+<CompareOpcode>    = "CMP" | "CMN" | "TST" | "TEQ";
+
+<BranchOpcode>     = "B" | "BL";
 
 Register = #"(R1[0-5])|(R[1-9])" | #"A[1-4]" | #"V[1-6]" |
            "SL" | "FP" | "IP" | "SP" | "LR" | "PC";
@@ -46,12 +63,22 @@ Shift = ShiftWithArgument | "RRX";
 
 <ShiftType> = "LSL" | "ASL" | "LSR" | "ASR" | "ROR";
 
-Immediate = <"#"> #"\d+";
+Immediate = <"#"> Number;
+
+Address = Number | Identifier;
+
+<Number> = DecimalNumber | HexNumber;
+
+DecimalNumber = #"\d+";
+
+HexNumber = <"&"> #"[0-9A-F]+";
 
 Condition = "EQ" | "NE" | "VS" | "VC" | "HI" | "LS" | "PL" | "MI" | "CS" |
             "CC" | "GE" | "GT" | "LE" | "LT";
 
 Status = <"S">;
+
+Identifier = #"[A-Za-z_][A-Za-z0-9_-]*";
 
 <Separator> = <","> Whitespace;
 
