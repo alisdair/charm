@@ -52,7 +52,7 @@ StoreMultiple      = "FIXME";
 
 <BranchOpcode>     = "B" | "BL";
 
-Register = #"(R1[0-5])|(R[1-9])" | #"A[1-4]" | #"V[1-6]" |
+Register = #"(R1[0-5])|(R[0-9])" | #"A[1-4]" | #"V[1-6]" |
            "SL" | "FP" | "IP" | "SP" | "LR" | "PC";
 
 <ShiftedRegisterOrImmediate> = Register [Separator Shift] | Immediate;
