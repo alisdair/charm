@@ -25,6 +25,7 @@
 
 (deftest test-add-register-shifted
   (is (= [:Source [:Statement [:Instruction [:Arithmetic "ADD" [:Register "R1"] [:Register "R2"] [:Register "R3"] [:Shift "RRX"]]]]] (parser "ADD R1, R2, R3, RRX")))
+  (is (= [:Source [:Statement [:Instruction [:Arithmetic "ADD" [:Register "R1"] [:Register "R2"] [:Register "R3"] [:Shift "LSL" [:Register "R4"]]]]]] (parser "ADD R1, R2, R3, LSL R4")))
   (is (= [:Source [:Statement [:Instruction [:Arithmetic "ADD" [:Register "R1"] [:Register "R2"] [:Register "R3"] [:Shift "LSL" [:Immediate [:DecimalNumber "15"]]]]]]] (parser "ADD R1, R2, R3, LSL #15"))))
 
 (deftest test-label-tied-to-following-instruction
