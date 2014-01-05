@@ -6,7 +6,7 @@ Source = (Line NewLine)* [Line];
 
 Comment = <#";\s*"> #"[^\n]*";
 
-Label = <"."> Identifier [Whitespace] [Statement] [Comment];
+Label = <"."> Identifier [Whitespace] ([Statement] | [Comment]);
 
 Statement = Instruction [Whitespace] [Comment];
 
