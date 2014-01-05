@@ -47,8 +47,21 @@ Swap               = "SWP" [Condition] Whitespace
                      Register Separator
                      Register Separator
                      <"["> Register <"]">;
-LoadMultiple       = "FIXME";
-StoreMultiple      = "FIXME";
+LoadMultiple       = "LDM" [Condition] MultipleType Whitespace
+                     Register [WriteBack] Separator
+                     RegisterList [Banked];
+StoreMultiple      = "STM" [Condition] MultipleType Whitespace
+                     Register [WriteBack] Separator
+                     RegisterList [Banked];
+
+MultipleType  = "IA" | "IB" | "DA" | "DB" | "FD" | "FA" | "ED" | "EA";
+WriteBack     = <"!">;
+Banked        = <"^">;
+RegisterList  = <"{">
+                (RegisterRange | Register)
+                (Separator RegisterRange | Separator Register)*
+                <"}">;
+RegisterRange = Register <"-"> Register;
 
 <ArithmeticOpcode> = "ADC" | "ADD" | "AND" | "BIC" | "EOR" | "ORR" | "RSB" |
                      "RSC" | "SBC" | "SUB";

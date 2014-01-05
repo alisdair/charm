@@ -62,3 +62,7 @@
 
 (deftest test-swap
   (is (= [:Source [:Statement [:Instruction [:Swap "SWP" [:Register "R0"] [:Register "R0"] [:Register "R1"]]]]] (parser "SWP R0, R0, [R1]"))))
+
+(deftest test-load-multiple
+  (is (= [:Source [:Statement [:Instruction [:LoadMultiple "LDM" [:MultipleType "FD"] [:Register "R13"] [:RegisterList [:RegisterRange [:Register "R10"] [:Register "R13"]]] [:Banked]]]]] (parser "LDMFD R13, {R10-R13}^")))
+  (is (= [:Source [:Statement [:Instruction [:LoadMultiple "LDM" [:MultipleType "IA"] [:Register "R13"] [:WriteBack] [:RegisterList [:RegisterRange [:Register "R0"] [:Register "R3"]] [:Register "PC"]]]]]] (parser "LDMIA R13!, {R0-R3, PC}"))))
