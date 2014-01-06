@@ -4,12 +4,14 @@
 
 (def parser (insta/parser (clojure.java.io/resource "armv2.ebnf")))
 
+(defn unknown-instruction [instruction]
+  (str "Unknown opcode: " (first instruction)))
+
 (defn three-operand [instruction]
   (first instruction))
 
 (defn assemble-instruction [instruction]
-  (let [jump-table
-        {
+  (let [jump-table {
          :Arithmetic          three-operand
          :Move                three-operand
          :Compare             three-operand
@@ -23,11 +25,11 @@
          ; :LoadMultiple        load-store-multiple
          ; :StoreMultiple       load-store-multiple
          }
-        instruction-type (first instruction)]
-
-    (or
-      ((get jump-table instruction-type) (rest instruction))
-      "unknown-instruction")))
+        instruction-type (first instruction)
+        assembler        (or
+                           (get jump-table instruction-type)
+                           unknown-instruction)]
+    (assembler (rest instruction))))
 
 (defn assemble [lines]
   (map #(assemble-instruction (second %))
