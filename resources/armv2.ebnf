@@ -8,7 +8,7 @@ Comment = <#";\s*"> #"[^\n]*";
 
 Label = <"."> Identifier [Whitespace] ([Statement] | [Comment]);
 
-Statement = Instruction [Whitespace] [Comment];
+<Statement> = Instruction [Whitespace] [Comment];
 
 Instruction = Arithmetic | Move | Compare |
               Multiply | MultiplyAccumulate |
