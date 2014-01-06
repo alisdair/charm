@@ -4,6 +4,35 @@
 
 (def parser (insta/parser (clojure.java.io/resource "armv2.ebnf")))
 
+(defn three-operand [instruction]
+  (first instruction))
+
+(defn assemble-instruction [instruction]
+  (let [jump-table
+        {
+         :Arithmetic          three-operand
+         :Move                three-operand
+         :Compare             three-operand
+         ; :Branch              branch
+         ; :SoftwareInterrupt   software-interrupt
+         ; :Multiply            multiply
+         ; :MultiplyAccumulate  multiply
+         ; :Load                load-store
+         ; :Store               load-store
+         ; :Swap                load-store
+         ; :LoadMultiple        load-store-multiple
+         ; :StoreMultiple       load-store-multiple
+         }
+        instruction-type (first instruction)]
+
+    (or
+      ((get jump-table instruction-type) (rest instruction))
+      "unknown-instruction")))
+
+(defn assemble [lines]
+  (map #(assemble-instruction (second %))
+       (filter #(= (first %) :Instruction) lines)))
+
 (def arithmetic-opcode
   {
    "ADC" 2r0101
