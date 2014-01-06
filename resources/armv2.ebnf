@@ -1,4 +1,4 @@
-Source = (Line NewLine)* [Line];
+<Source> = (Line NewLine)* [Line];
 
 <Line> = SourceLine | Whitespace;
 
